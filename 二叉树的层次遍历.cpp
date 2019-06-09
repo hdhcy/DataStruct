@@ -60,22 +60,26 @@ void CreateBTree(BTNode *&b,const char *str)
 	}
 }
 
+//队列初始化 
 void InitQueue(SqQueue *&q)
 {
 	q=(SqQueue *)malloc(sizeof(SqQueue));
 	q->front=q->rear=-1;
 }
 
+//销毁队列 
 void DestroyQueue(SqQueue *&q)
 {
 	free(q);
 }
 
+//判断队列是否为空 
 bool QueueEmpty(SqQueue *q)
 {
 	return q->front==q->rear;
 }
 
+//进队列 
 bool enQueue(SqQueue *&q,BTNode *e)
 {
 	if(q->rear==50-1)
@@ -85,6 +89,7 @@ bool enQueue(SqQueue *&q,BTNode *e)
 	return true;
 }
 
+//出队列 
 bool deQueue(SqQueue *&q,BTNode *&e)
 {
 	if(q->front==q->rear)
@@ -94,6 +99,7 @@ bool deQueue(SqQueue *&q,BTNode *&e)
 	return true;
 }
 
+//层次遍历 
 void LevelOrder(BTNode *b)
 {
 	BTNode *p;
