@@ -153,6 +153,50 @@ bool ancestor(BTNode *b,char x)
 
 }
 
+//输出从根节点到所有叶子节点的路径的逆序列
+void AllPath(BTNode *b,char path[],int &pathlength)
+{
+	if(b!=NULL)
+	{
+		if(b->lchild==NULL&&b->rchild==NULL)
+		{
+			path[pathlength]=b->data;
+			printf("%4c叶子节点到根节点的路径为：",b->data);
+			for(int i=pathlength;i>0;i--)
+				printf("%4c",path[i]);
+			printf("\n");
+		}else{
+			path[pathlength++]=b->data;
+			AllPath(b->lchild,path,pathlength);
+			AllPath(b->rchild,path,pathlength);
+			pathlength--;
+		}
+	}
+} 
+
+//输出叶子节点到根节点的最长路径
+void LongestPath(BTNode *b,char path[],int &pathlength,char longestpath[],int &pathlongestpath)
+{
+	if(b!=NULL)
+	{
+		if(b->lchild==NULL&&b->rchild==NULL)
+		{
+			path[pathlength]=b->data;
+			if(pathlength>pathlongestpath)
+			{
+				for(int i=pathlength;i>=0;i--)
+					longestpath[i]=path[i];
+				pathlongestpath=pathlength;
+			}
+		}else{
+			path[pathlength++]=b->data;
+			LongestPath(b->lchild,path,pathlength,longestpath,pathlongestpath);
+			LongestPath(b->rchild,path,pathlength,longestpath,pathlongestpath);
+			pathlength--;
+		}
+	}
+} 
+
 //先序遍历递归算法
 void PreOrder(BTNode *b)
 {
@@ -191,6 +235,8 @@ int main(void)
 	BTNode *b;
 	int m,n,item=0;
 	bool mm;
+	char path[100],longestpath[100];
+	int pathlength=0,pathlongestpath=0;
 	CreateBTree(b,"A(B(D(,G)),C(E,F))");
 	printf("先序遍历二叉树：");
 	PreOrder(b);
@@ -225,7 +271,14 @@ int main(void)
 	printf("\n");
 	printf("输出值为G的结点的所有祖先:  ");
 	ancestor(b,'G');
-	
+	printf("\n");
+	printf("输出从根节点到所有叶子节点的路径的逆序列：\n"); 
+	AllPath(b,path,pathlength);
+	printf("输出叶子节点到根节点的最长路径: \n");
+	LongestPath(b,path,pathlength,longestpath,pathlongestpath);
+	for(int i=pathlongestpath;i>=0;i--)
+		printf("%4c",longestpath[i]);
+	printf("\n");
 }
 
 
