@@ -33,6 +33,12 @@ typedef struct
 	int front,rear;
 }SqQueue;
 
+typedef struct
+{
+	int data;
+	int parent;
+}QUERE;
+
 //队列初始化 
 void InitQueue(SqQueue *&q)
 {
@@ -142,8 +148,8 @@ void BFS(AdjGraph *G,int v)
 	int visited[50];
 	for(int i=0;i<G->n;i++)
 		visited[i]=0;
-	printf("%4d",v);
 	visited[v]=1;
+	printf("%4d",v);
 	enQueue(qu,v);
 	while(!QueueEmpty(qu))
 	{
@@ -159,24 +165,123 @@ void BFS(AdjGraph *G,int v)
 			}
 			p=p->nextarc;
 		}
-	}
+	} 
 	printf("\n");	
+} 
+
+//求图G中从顶点u到顶点v的一条最短路径
+void ShortPath(AdjGraph *G,int u,int v)
+{
+	ArcNode *p;
+	int w,i;
+	QUERE qu[50];
+	int front=-1,rear=-1;
+	int visited[50];
+	for(int i=0;i<G->n;i++)
+		visited[i]=0;
+		
+	rear++;
+	qu[rear].data=u;
+	qu[rear].parent=-1;
+	visited[u]=1;
+	
+	while(front!=rear)
+	{
+		front++;
+		w=qu[front].data;
+		
+		if(w==v)
+		{
+			i=front;
+			w=qu[front].data;
+	
+			while(qu[i].parent!=-1)
+			{
+				printf("%4d",qu[i].data);
+				i=qu[i].parent;
+			}
+			printf("%4d\n",qu[i].data);
+			break;	
+		}
+		
+		p=G->adjlist[w].firstarc;
+		while(p!=NULL)
+		{
+			if(visited[p->adjvex]==0)
+			{
+				visited[p->adjvex]=1;
+				
+				rear++;
+				qu[rear].data=p->adjvex;
+				qu[rear].parent=front;
+			}
+			p=p->nextarc;
+		} 
+	}
+} 
+
+//求图G中距离顶点v最远的一个顶点
+int Maxdist(AdjGraph *G,int v)
+{
+	ArcNode *p;
+	int w;
+	QUERE qu[50];
+	int front=-1,rear=-1;
+	int visited[50];
+	for(int i=0;i<G->n;i++)
+		visited[i]=0;
+	
+	rear++;
+	qu[rear].data=v;
+	qu[rear].parent=-1;
+	visited[v]=1;
+	
+	while(front!=rear)
+	{
+		front++;
+		w=qu[front].data;
+		
+		p=G->adjlist[w].firstarc;
+		while(p!=NULL)
+		{
+			if(visited[p->adjvex]==0)
+			{
+				visited[p->adjvex]=1;
+				
+				rear++;
+				qu[rear].data=p->adjvex;
+				qu[rear].parent=front;
+			}
+			p=p->nextarc;
+		}
+	}
+	return w;	
 } 
 
 int main(void)
 {
 	int n=5,e=7;
-	int A[50][50]={{0,8,INF,5,INF},
-				   {INF,0,3,INF,INF},
-				   {INF,INF,0,INF,6},
-				   {INF,INF,9,0,INF},
-				   {INF,INF,INF,INF,0}};
+	int u=0,v=4; 
+//	int A[50][50]={{0,8,INF,5,INF},
+//				   {INF,0,3,INF,INF},
+//				   {INF,INF,0,INF,6},
+//				   {INF,INF,9,0,INF},
+//				   {INF,INF,INF,INF,0}};
+			
+	int A[50][50]={{0,1,1,0,0},
+				   {0,0,1,0,0},
+				   {0,0,0,1,1},
+				   {0,0,0,0,1},
+				   {1,0,0,0,0}};
 					
 	AdjGraph *G;
 	CreateAdj(G,A,n,e);
 	DispAdj(G);
 	printf("广度优先遍历：");
 	BFS(G,0);
+	printf("顶点%d到顶点%d的最短路径为：",u,v);
+	ShortPath(G,u,v);
+	printf("不带权无向图G中距离顶点%d最远的顶点为%d",v,Maxdist(G,v)); 
 }
 
 
